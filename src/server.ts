@@ -27,4 +27,53 @@ const startServer = async () => {
 
 startServer();
 
+process.on("unhandledRejection", (err)=>{
+  console.log("Unhandled Rejection detected... Server is closing down...", err);
+
+  if(server){
+    server.close(()=>{
+      process.exit(1);
+    })
+  }
+
+  process.exit(1);
+
+})
+
+process.on("uncaughtException", (err) =>{
+  console.log("Uncaught Exception Error detected... Server is shutting down...", err)
+
+  if(server){
+    server.close(() =>{
+      process.exit(1);
+    })
+  }
+
+  process.exit(1);
+})
+
+process.on("SIGTERM", ()=>{
+  console.log("SIGTERM signal is received. Server is shutting down... ")
+
+  if(server){
+    server.close(()=>{
+      process.exit(1);
+    })
+  }
+
+  process.exit(1);
+})
+
+process.on("SIGINT", ()=>{
+  console.log("SIGINT signal is received. Server is shutting down... ")
+
+  if(server){
+    server.close(()=>{
+      process.exit(1);
+    })
+  }
+
+  process.exit(1);
+})
+
 
