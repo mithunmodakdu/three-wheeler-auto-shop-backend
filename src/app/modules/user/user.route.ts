@@ -10,5 +10,6 @@ router.post("/register",
   // validateRequest(createUserZodSchema),
   userControllers.createUser
 );
+router.get("/get-all-users", userControllers.getAllUsers)
 
 export const UserRoutes = router; 
