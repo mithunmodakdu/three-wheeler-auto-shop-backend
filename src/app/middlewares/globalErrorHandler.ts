@@ -1,23 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 import { envVars } from "../config/env";
 import AppError from "../errorHelpers/appError";
 
-export const globalErrorHandler = async(err: any, req: Request, res: Response, next: NextFunction) =>{
+export const globalErrorHandler = async(error: any, req: Request, res: Response, next: NextFunction) =>{
   let statusCode = 500;
   let message = "Something went wrong!";
 
-  if(err instanceof AppError){
-    statusCode = err.statusCode;
-    message = err.message;
-  }else if(err instanceof Error){
+  if(error instanceof AppError){
+    statusCode = error.statusCode;
+    message = error.message;
+  }else if(error instanceof Error){
     statusCode = 500;
-    message = err.message
+    message = error.message
   }
 
   res.status(statusCode).json({
     success: false,
     message,
-    err: envVars.NODE_ENV === "development"? err : null,
-    stack: envVars.NODE_ENV === "development"? err.stack : null
+    error: envVars.NODE_ENV === "development"? error : null,
+    stack: envVars.NODE_ENV === "development"? error.stack : null
   });
 }
