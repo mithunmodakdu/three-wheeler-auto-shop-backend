@@ -6,6 +6,7 @@ import AppError from "../../errorHelpers/appError";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { envVars } from "../../config/env";
 import { ERole } from "./user.interface";
+import { verifyToken } from "../../utils/jwt";
 
 const router = Router();
 
@@ -13,19 +14,22 @@ router.post("/register",
   validateRequest(createUserZodSchema),
   userControllers.createUser
 );
-router.get("/get-all-users",
+
+router.get("/all-users",
   async(req: Request, res: Response, next: NextFunction)=>{
     try {
       const accessToken = req.headers.authorization;
+      console.log(accessToken); 
 
       if(!accessToken){
         throw new AppError(403, "No access Token recieved.")
       }
 
-      const verifiedAccessToken = jwt.verify(accessToken, envVars.JWT_WEB_SECRET);
-      console.log(verifiedAccessToken); 
+      // const verifiedAccessToken = jwt.verify(accessToken, envVars.JWT_WEB_SECRET);
+      const verifiedAccessToken = verifyToken(accessToken, envVars.JWT_WEB_SECRET);
+      console.log((verifiedAccessToken as JwtPayload).role); 
 
-      if((verifiedAccessToken as JwtPayload).role !== ERole.ADMIN || ERole.SUPER_ADMIN){
+      if((verifiedAccessToken as JwtPayload).role !== ERole.SUPER_ADMIN){
         throw new AppError(403, "You are not permitted to view this route")
       }
 
