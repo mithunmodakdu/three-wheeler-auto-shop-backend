@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import app from "./app";
 
 import dotenv from "dotenv";
+import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
 
 dotenv.config();
 
@@ -26,7 +27,11 @@ const startServer = async () => {
   }
 };
 
-startServer();
+
+(async() =>{
+  await startServer();
+  await seedSuperAdmin();
+})()
 
 process.on("unhandledRejection", (err)=>{
   console.log("Unhandled Rejection detected... Server is closing down...", err);
